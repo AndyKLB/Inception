@@ -10,5 +10,5 @@ COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 443
 # la commande au runtime "init.sh "nginx", "-g", "daemon off;""
 # cmd envoye au script init.sh -> $@ plus flexible que d ecrire en dur dasn le script directement
-ENTRYPOINT ["usr/local/bin/init.sh"]
+ENTRYPOINT ["/usr/local/bin/init.sh"]
 CMD [ "nginx", "-g", "daemon off;" ]  

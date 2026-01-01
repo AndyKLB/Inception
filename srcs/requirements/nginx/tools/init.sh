@@ -9,10 +9,11 @@ if [ ! -f /etc/nginx/ssl/nginx.crt ]; then
         -out /etc/nginx/ssl/nginx.crt \
         -subj "/C=FR/ST=IDF/L=PARIS/O=42/CN=ankammer.42.fr"
 # il ne genere qu un seul cert et lance nginx
-nginx -t
 
 fi
-    exec "$@"
+
+nginx -t
+exec "$@"
 # $@ = "nginx -g daemon off;"
 
 
