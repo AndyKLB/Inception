@@ -181,3 +181,70 @@ docker logs <CONTAINER_ID ou CONTAINER_NAME>
     -f : suivre en permanence les logs du conteneur
     -t : afficher la date et l'heure de la réception de la ligne de log
     --tail <NOMBRE DE LIGNE> = nombre de lignes à afficher à partir de la fin (par défaut "all")
+
+## Ports par défaut (à connaître par cœur)
+# Protocole	Port
+HTTP	80
+HTTPS	443 ex: https://ankammer.42.fr -> ankammer.42.fr:443
+FTP	    21
+FastCGI 9000 nginx -> WP
+SSH	    22
+MySQL	3306 WP -> MariaDB
+
+## 6️⃣ SÉCURITÉ EXIGÉE À L’ORAL (CE QU’ILS TESTENT VRAIMENT)
+❗ Ils ne testent PAS Docker
+❗ Ils testent TA COMPRÉHENSION
+🔐 Ce qu’ils attendent que tu saches expliquer
+1️⃣ Pourquoi .env n’est pas versionné
+
+👉 Secrets
+👉 Séparation code / config
+
+2️⃣ Pourquoi pas admin
+
+👉 Attaques par dictionnaire
+👉 Brute force ciblé
+
+3️⃣ Pourquoi HTTPS obligatoire
+
+👉 Chiffrement
+👉 Intégrité
+👉 Authentification
+
+4️⃣ Pourquoi un seul port ouvert
+
+👉 Surface d’attaque minimale
+👉 Principe du moindre privilège
+
+5️⃣ Pourquoi des volumes
+
+👉 Persistance
+👉 Redémarrage sans perte
+👉 Séparation données / service
+
+🧠 Phrase magique à l’oral
+
+« Chaque service est isolé, communique uniquement via un réseau privé,
+les secrets sont injectés dynamiquement,
+les données persistées par volumes,
+et l’exposition réseau est réduite au strict minimum. »
+
+version définit la version du format docker-compose,
+c’est le langage de description de l’infrastructure, pas Docker lui-même
+
+## Résumé visuel du certificat :
+Code
+
+┌─────────────────────────────────────────────────┐
+│              CERTIFICAT SSL                     │
+├─────────────────────────────────────────────────┤
+│  Pays :           France (FR)                   │
+│  Région :        Île-de-France (IDF)            │
+│  Ville :         Paris                          │
+│  Organisation :  42                             │
+│  Domaine :       wzeraig.42.fr    ← IMPORTANT ! │
+│                                                 │
+│  Valide :        365 jours                      │
+│  Clé :            RSA 2048 bits                 │
+│  Type :          Auto-signé (x509)              │
+└─────────────────────────────────────────────────┘
