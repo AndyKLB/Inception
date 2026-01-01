@@ -4,13 +4,15 @@ set -e
 
 
 if [ ! -f /etc/nginx/ssl/nginx.crt ]; then
-    openssl req -x509 -nodes -days 365 -newkey rsa: 4096 \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
         -keyout /etc/nginx/ssl/nginx.key \
         -out /etc/nginx/ssl/nginx.crt \
         -subj "/C=FR/ST=IDF/L=PARIS/O=42/CN=ankammer.42.fr"
 # il ne genere qu un seul cert et lance nginx
+nginx -t
+
 fi
-    exec $@
+    exec "$@"
 # $@ = "nginx -g daemon off;"
 
 
