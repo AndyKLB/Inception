@@ -114,7 +114,7 @@ inception/
 │   ├── credentials.txt
 │   ├── db_password.txt
 │   └── db_root_password.txt
-├──srcs/
+├── srcs/
    ├── docker-compose.yml          # Orchestration des services
    ├── .env                        # Variables d'environnement
    └── requirements/
