@@ -109,9 +109,11 @@ inception/
 ├── Makefile
 ├── secrets/
 │   ├── credentials.txt
-|   ├── db_password.txt
-|   └── db_root_password.txt
+│   ├── db_password.txt
+│   └── db_root_password.txt
 ├── README.md
+├── DEV_DOC.md
+├── USER_DOC.md
 ├──srcs/
    ├── docker-compose.yml          # Orchestration des services
    ├── .env                        # Variables d'environnement
