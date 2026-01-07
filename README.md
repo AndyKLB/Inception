@@ -107,7 +107,10 @@ Chaque service s'exécute dans un conteneur dédié construit à partir d'une im
 ```
 inception/
 ├── Makefile
-├── .env
+├── secrets/
+│   ├── credentials.txt
+|   ├── db_password.txt
+|   └── db_root_password.txt
 ├── README.md
 ├──srcs/
    ├── docker-compose.yml          # Orchestration des services
