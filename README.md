@@ -102,25 +102,29 @@ Chaque service s'exécute dans un conteneur dédié construit à partir d'une im
 - **Volumes Docker** pour les données WordPress et MariaDB (persistance et portabilité)
 - **Bind Mounts** pour les fichiers de configuration (facilite le développement)
 
-### Structure des sources
+### Structure du projet
 
 ```
-srcs/
-├── docker-compose.yml          # Orchestration des services
-├── .env                        # Variables d'environnement
-└── requirements/
-    ├── mariadb/
-    │   ├── Dockerfile          # Image MariaDB personnalisée
-    │   ├── conf/               # Configuration MySQL
-    │   └── tools/              # Scripts d'initialisation
-    ├── nginx/
-    │   ├── Dockerfile          # Image NGINX avec TLS
-    │   ├── conf/               # Configuration NGINX et certificats
-    │   └── tools/              # Scripts de setup
-    └── wordpress/
-        ├── Dockerfile          # Image WordPress + PHP-FPM
-        ├── conf/               # Configuration PHP
-        └── tools/              # Scripts d'installation WP
+inception/
+├── Makefile
+├── .env
+├── README.md
+├──srcs/
+   ├── docker-compose.yml          # Orchestration des services
+   ├── .env                        # Variables d'environnement
+   └── requirements/
+       ├── mariadb/
+       │   ├── Dockerfile          # Image MariaDB personnalisée
+       │   ├── conf/               # Configuration MySQL
+       │   └── tools/              # Scripts d'initialisation
+       ├── nginx/
+       │   ├── Dockerfile          # Image NGINX avec TLS
+       │   ├── conf/               # Configuration NGINX et certificats
+       │   └── tools/              # Scripts de setup
+       └── wordpress/
+           ├── Dockerfile          # Image WordPress + PHP-FPM
+           ├── conf/               # Configuration PHP
+           └── tools/              # Scripts d'installation WP
 ```
 
 ## Resources
