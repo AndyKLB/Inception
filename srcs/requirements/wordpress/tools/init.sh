@@ -8,8 +8,8 @@ cd /var/www/html
 if [ ! -f wp-config.php ]; then
 
     readarray -t WP_PASS < /run/secrets/credentials.txt
-    WP_ADMIN_PASSWORD=$(WP_PASS[0])
-    WP_USER_PASSWORD=$(WP_PASS[1])
+    WP_ADMIN_PASSWORD=${WP_PASS[0]}
+    WP_USER_PASSWORD=${WP_PASS[1]}
 
     wp core download --allow-root
 

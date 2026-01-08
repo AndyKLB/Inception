@@ -1,7 +1,7 @@
 FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y \
-        php-fm \
+        php-fpm \
         php-mysql \
         php-curl \
         php-xml \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
         && mv --chmod=755 wp-cli.phar /usr/local/bin/wp \
         && mkdir -p /var/www/html /run/php
 
-COPY cond/www.conf /etc/php/8.2/fpm/pool.d/
+COPY conf/www.conf /etc/php/8.2/fpm/pool.d/
 
 COPY --chmod=755 tools/init.sh /usr/local/bin
 
