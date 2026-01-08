@@ -1,15 +1,16 @@
 FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y \
-        php-fpm \
-        php-mysql \
-        php-curl \
-        php-xml \
-        php-mbstring \
+        php8.2-fpm \
+        php8.2-mysql \
+        php8.2-curl \
+        php8.2-xml \
+        php8.2-mbstring \
         curl \
         && rm -rf /var/lib/apt/lists/* \
         && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-        && mv --chmod=755 wp-cli.phar /usr/local/bin/wp \
+        && mv wp-cli.phar /usr/local/bin/wp \
+        && chmod 755 /usr/local/bin/wp \
         && mkdir -p /var/www/html /run/php
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/

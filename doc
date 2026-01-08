@@ -269,3 +269,17 @@ docker-compose down -v
 
 # Inspecter un volume
 docker volume inspect volume_name
+
+
+
+# [www] -> pool de process ouvriers (process enfants -> fork) qui traitent les requetes par site
+# user/group -> qui exec le code php, n a pas acces au root en cas de piratage
+# listen.mode -> 0660-> 0 = fichier special 6 = user 6 = group 0 = others definit les droits 
+# pm -> gestions dynamique des enfants (ouvriers), s adapte a la charge sans depasser max children
+# pm.max_children -> ouvriers max simultane
+# pm.start_servers -> nb ouvriers au lancement de php
+# pm.min_spare_servers/pm.max_spare_servers -> nombre de worker max/min en attente 
+# chdir -> dossier courant des scripts. si utliisaton d un chemin relatif il sera toujours prefixe par le "chdir"
+# catch_workers_output -> intercepte tout les logs (error etc) utile pour reperer les oublis erreur etourderies
+    # error_log -> envoi tout dans le fd 2 sans le consigner pour autant(stderr)
+    # log_errors -> force a consigner toutes les erreur dans error log pas seulement sur la page HTML

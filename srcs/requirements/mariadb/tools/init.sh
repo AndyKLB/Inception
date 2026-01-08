@@ -1,8 +1,8 @@
 #!/bin/bash
 
 set -e
-MYSQL_PASSWORD=${cat /run/secrets/db_password.txt}
-MYSQL_ROOT_PASSWORD=${cat /run/secrets/db_root_password.txt}
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 
 mkdir -p /run/mysqld
 chown mysql:mysql /run/mysqld

@@ -1,4 +1,4 @@
-#!/bin/bash
+docker exec -it mariadb mysql -u root#!/bin/bash
 
 
 chown -R www-data:www-data /var/www/html
@@ -7,16 +7,17 @@ cd /var/www/html
 
 if [ ! -f wp-config.php ]; then
 
-    readarray -t WP_PASS < /run/secrets/credentials.txt
+    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+    readarray -t WP_PASS < /run/secrets/credentials
     WP_ADMIN_PASSWORD=${WP_PASS[0]}
     WP_USER_PASSWORD=${WP_PASS[1]}
 
     wp core download --allow-root
 
     wp config create --allow-root \
-        --dbname=$MY_SQL_DATABASE \
+        --dbname=$MYSQL_DATABASE \
         --dbuser=$MYSQL_USER \
-        --dbpassword=$MYSQL_PASSWORD \
+        --dbpass=$MYSQL_PASSWORD \
         --dbhost=$MYSQL_HOST
 
     wp core install --allow-root \
