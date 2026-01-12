@@ -1,5 +1,6 @@
-docker exec -it mariadb mysql -u root#!/bin/bash
+#!/bin/bash
 
+docker exec -it mariadb mysql -u root
 
 chown -R www-data:www-data /var/www/html
 
