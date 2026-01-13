@@ -1,4 +1,5 @@
 [mysqld]
+skip-grant-tables=0
 user                    = mysql
 pid-file                = /run/mysqld/mysqld.pid
 basedir                 = /usr

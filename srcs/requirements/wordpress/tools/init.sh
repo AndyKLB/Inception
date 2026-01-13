@@ -1,14 +1,31 @@
 #!/bin/bash
 
-docker exec -it mariadb mysql -u root
+set -e
+
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+MYSQL_FLAG=0
+echo "Verification disponibilite MariaDB"
+for i in {1..30}; do
+    if mysqladmin ping -h mariadb -u$MYSQL_USER -p$MYSQL_PASSWORD --silent; then
+        MYSQL_FLAG=1
+        break
+    fi
+    echo "En attente de MariaDB ($i/30)"
+    sleep 1
+done
+if [ $MYSQL_FLAG -eq 0 ]; then
+    echo "Erreur: MariaDB indisponible"
+    exit 1
+fi
+sleep 10
 
 chown -R www-data:www-data /var/www/html
-
 cd /var/www/html
 
-if [ ! -f wp-config.php ]; then
-
-    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+if [ ! -f wp-config.php ] || [ ! -f index.php ]; then
+    echo "Fichiers Wordpress manquants ou incomplets, nettoyage et installation"
+    rm -rf /var/www/html/*
+    echo "Wordpress en cours d'installation..."
     readarray -t WP_PASS < /run/secrets/credentials
     WP_ADMIN_PASSWORD=${WP_PASS[0]}
     WP_USER_PASSWORD=${WP_PASS[1]}
@@ -28,14 +45,21 @@ if [ ! -f wp-config.php ]; then
         --admin_password=$WP_ADMIN_PASSWORD \
         --admin_email=$WP_ADMIN_EMAIL
 
-    wp user create $WP_USER $WP_USER_EMAIL \
-        --role=author \
-        --user_pass=$WP_USER_PASSWORD \
-        --allow-root
-
-    chown -R www-data:www-data /var/www/html
-
+    echo "Ajout d'un utilisateur supplementaire..."
+    if ! wp user get "$WP_USER" --allow-root &>/dev/null; then
+        wp user create $WP_USER $WP_USER_EMAIL \
+            --role=author \
+            --user_pass=$WP_USER_PASSWORD \
+            --allow-root
+    else
+        echo "Utilisateur deja existant"
+    fi
+else
+    echo "Wordpress deja installe"
 fi
+
+
+chown -R www-data:www-data /var/www/html
 
 exec "$@"
 
