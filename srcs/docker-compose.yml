@@ -56,12 +56,14 @@ networks:
     driver: bridge
 volumes:
   wordpress_data:
+    name: wordpress_data
     driver: local
     driver_opts:
       type: none
       o: bind
       device: /home/ankammer/data/wordpress
   mariadb_data:
+    name: mariadb_data
     driver: local
     driver_opts:
       type: none
