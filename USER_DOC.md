@@ -1,279 +1,152 @@
-# Documentation Utilisateur - Inception
+# Inception - User Guide
 
-*Ce document explique comment utiliser et administrer l'infrastructure Inception.*
+This guide explains how to use and manage the Inception infrastructure as an end user. It covers setup, service access, credentials, troubleshooting, and backup/restore.
 
-## Services fournis
+---
 
-L'infrastructure Inception met à disposition les services suivants :
+## Table of Contents
+1. Overview
+2. Prerequisites
+3. Setup & Startup
+4. Accessing Services
+5. Managing Credentials
+6. Stopping & Cleaning Up
+7. Troubleshooting
+8. Backup & Restore
+9. Support
 
-### 1. **Site WordPress**
-- **Description** : Système de gestion de contenu (CMS) permettant de créer et gérer un site web
-- **Accès** : https://ankammer.42.fr (ou https://localhost en développement)
-- **Fonctionnalités** : 
-  - Création et publication d'articles
-  - Gestion des médias
-  - Personnalisation du thème
-  - Extensions et plugins
+---
 
-### 2. **Serveur Web NGINX**
-- **Description** : Serveur web sécurisé avec chiffrement TLS
-- **Protocoles supportés** : TLSv1.2 et TLSv1.3
-- **Fonctionnalité** : Sert le site WordPress de manière sécurisée via HTTPS
+## 1. Overview
 
-### 3. **Base de données MariaDB**
-- **Description** : Système de gestion de base de données MySQL
-- **Rôle** : Stocke toutes les données WordPress (articles, utilisateurs, configurations)
-- **Accès** : Interne uniquement, non exposé publiquement
+Inception provides a local infrastructure with the following services:
+- **WordPress**: Website and admin panel (PHP-FPM)
+- **NGINX**: Secure web server (HTTPS)
+- **MariaDB**: Database backend
 
-## Démarrer et arrêter le projet
+All services run in isolated Docker containers and are orchestrated with Docker Compose.
 
-### Démarrage de l'infrastructure
+---
 
-```bash
-make
-```
+## 2. Prerequisites
+- Linux (recommended) or macOS
+- Docker (20.10+)
+- Docker Compose (v2+)
+- GNU Make
 
-Cette commande va :
-1. Construire les images Docker si nécessaire
-2. Créer les volumes pour la persistance des données
-3. Démarrer tous les services (NGINX, WordPress, MariaDB)
+---
 
-**Temps de démarrage** : Environ 30-60 secondes
+## 3. Setup & Startup
 
-### Arrêt de l'infrastructure
-
-```bash
-make stop
-```
-
-Cette commande arrête tous les conteneurs sans supprimer les données.
-
-### Redémarrage
-
-```bash
-make restart
-```
-
-Ou :
-
-```bash
-make stop
-make
-```
-
-### Nettoyage complet
-
-⚠️ **Attention** : Cette commande supprime toutes les données !
-
-```bash
-make fclean
-```
-
-## Accès au site et à l'administration
-
-### Accès au site WordPress
-
-**URL** : https://ankammer.42.fr (ou https://localhost)
-
-Le site est accessible depuis n'importe quel navigateur web. Vous verrez peut-être un avertissement de sécurité concernant le certificat SSL (normal en développement avec un certificat auto-signé).
-
-### Accès au panneau d'administration WordPress
-
-**URL** : https://ankammer.42.fr/wp-admin (ou https://localhost/wp-admin)
-
-**Identifiants par défaut** :
-- Les identifiants sont stockés dans le fichier `secrets/credentials.txt`
-- Format : `username:password`
-
-### Première connexion
-
-1. Ouvrez votre navigateur
-2. Accédez à l'URL du site
-3. Ajoutez `/wp-admin` à l'URL pour accéder au panneau d'administration
-4. Entrez vos identifiants
-5. Vous êtes connecté au tableau de bord WordPress
-
-## Gestion des identifiants
-
-### Localisation des identifiants
-
-Tous les identifiants sensibles sont stockés dans le dossier `secrets/` à la racine du projet :
-
-```
-secrets/
-├── credentials.txt          # Identifiants WordPress (admin)
-├── db_password.txt          # Mot de passe de la base de données
-└── db_root_password.txt     # Mot de passe root MariaDB
-```
-
-### Format des fichiers
-
-**credentials.txt**
-```
-username:password
-```
-
-**db_password.txt** et **db_root_password.txt**
-```
-votre_mot_de_passe
-```
-
-### Modifier les identifiants
-
-⚠️ **Important** : Les identifiants doivent être modifiés **avant** le premier démarrage.
-
-1. Éditez les fichiers dans `secrets/`
-2. Si les conteneurs sont déjà lancés, effectuez un nettoyage complet :
-   ```bash
-   make fclean
+1. **Clone the repository:**
+   ```sh
+   git clone <your-repo-url>
+   cd Inception
    ```
-3. Relancez l'infrastructure :
-   ```bash
+2. **Configure secrets:**
+   - Edit files in `secrets/`:
+     - `credentials.txt` (format: username:password)
+     - `db_password.txt` (MariaDB user password)
+     - `db_root_password.txt` (MariaDB root password)
+3. **(Optional) Add local DNS entry:**
+   ```sh
+   sudo sh -c 'echo "127.0.0.1 ankammer.42.fr" >> /etc/hosts'
+   ```
+4. **Start the infrastructure:**
+   ```sh
    make
    ```
+   This will build and start all services.
 
-### Sécurité des identifiants
+---
 
-- ✅ Ne commitez **jamais** les fichiers de secrets dans Git
-- ✅ Utilisez des mots de passe forts (12+ caractères, mixte)
-- ✅ Changez les mots de passe par défaut
-- ✅ Ne partagez pas vos identifiants
+## 4. Accessing Services
 
-## Vérification du bon fonctionnement
+- **WordPress site:**
+  - URL: https://ankammer.42.fr (or https://localhost)
+- **WordPress admin panel:**
+  - URL: https://ankammer.42.fr/wp-admin (or https://localhost/wp-admin)
+  - Credentials: see `secrets/credentials.txt`
+- **MariaDB:**
+  - Internal only (not exposed to the public)
 
-### Vérifier l'état des conteneurs
+> You may see a browser warning about the SSL certificate (self-signed in development). Accept the warning to proceed.
 
-```bash
-docker ps
-```
+---
 
-**Résultat attendu** : Vous devez voir 3 conteneurs en cours d'exécution :
-- `nginx`
-- `wordpress`
-- `mariadb`
+## 5. Managing Credentials
 
-Exemple de sortie :
-```
-CONTAINER ID   IMAGE       STATUS         PORTS                   NAMES
-abc123def456   nginx       Up 2 minutes   0.0.0.0:443->443/tcp   nginx
-789ghi012jkl   wordpress   Up 2 minutes   9000/tcp               wordpress
-345mno678pqr   mariadb     Up 2 minutes   3306/tcp               mariadb
-```
+- All sensitive credentials are stored in the `secrets/` directory.
+- **Change credentials before first startup** for security.
+- Never commit secrets to version control.
+- To update credentials after first run:
+  1. Edit the files in `secrets/`
+  2. Run:
+     ```sh
+     make fclean
+     make
+     ```
 
-### Vérifier les logs
+---
 
-Pour voir les logs d'un service spécifique :
+## 6. Stopping & Cleaning Up
 
-```bash
-# Logs NGINX
-docker logs nginx
+- **Stop all containers:**
+  ```sh
+  make down
+  ```
+- **Full cleanup (remove data, volumes, hosts entry):**
+  ```sh
+  make fclean
+  ```
 
-# Logs WordPress
-docker logs wordpress
+---
 
-# Logs MariaDB
-docker logs mariadb
-```
+## 7. Troubleshooting
 
-### Tester l'accès au site
+- **Check running containers:**
+  ```sh
+  docker ps
+  ```
+- **View logs:**
+  ```sh
+  make logs
+  # or for a specific service:
+  docker logs <container_name>
+  ```
+- **Database connection issues:**
+  - Check credentials in `secrets/`
+  - Ensure MariaDB is running
+- **SSL certificate warning:**
+  - Normal in development; accept the warning in your browser
+- **Site not responding:**
+  - Check container status and logs
+  - Try restarting:
+    ```sh
+    make restart
+    ```
 
-1. **Test avec curl** :
-   ```bash
-   curl -k https://localhost
-   ```
-   Vous devez recevoir du code HTML en réponse.
+---
 
-2. **Test navigateur** :
-   - Ouvrez https://ankammer.42.fr
-   - La page d'accueil WordPress doit s'afficher
+## 8. Backup & Restore
 
-### Vérifier la base de données
+- **Backup WordPress and MariaDB data:**
+  ```sh
+  docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar czf /backup/wordpress_backup.tar.gz -C /data .
+  docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar czf /backup/mariadb_backup.tar.gz -C /data .
+  ```
+- **Restore data:**
+  ```sh
+  make down
+  docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar xzf /backup/wordpress_backup.tar.gz -C /data
+  docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar xzf /backup/mariadb_backup.tar.gz -C /data
+  make up
+  ```
 
-```bash
-# Connexion à MariaDB
-docker exec -it mariadb mysql -u wordpress -p
-```
+---
 
-Entrez le mot de passe (contenu de `secrets/db_password.txt`), puis :
+## 9. Support
 
-```sql
-SHOW DATABASES;
-USE wordpress;
-SHOW TABLES;
-EXIT;
-```
-
-### Vérifier les volumes
-
-```bash
-docker volume ls
-```
-
-Vous devez voir 2 volumes :
-- Volume pour WordPress (`wordpress_data`)
-- Volume pour MariaDB (`mariadb_data`)
-
-### Vérifier le réseau
-
-```bash
-docker network ls
-```
-
-Vous devez voir le réseau `inception_network`.
-
-## Résolution de problèmes courants
-
-### Le site ne répond pas
-
-1. Vérifiez que tous les conteneurs sont lancés : `docker ps`
-2. Consultez les logs : `docker logs nginx`
-3. Redémarrez l'infrastructure : `make restart`
-
-### Erreur de connexion à la base de données
-
-1. Vérifiez que MariaDB est démarré : `docker ps`
-2. Consultez les logs MariaDB : `docker logs mariadb`
-3. Vérifiez les mots de passe dans `secrets/`
-
-### Certificat SSL non valide
-
-C'est normal en développement. Le certificat est auto-signé. Pour continuer :
-- Chrome/Edge : Cliquez sur "Avancé" puis "Continuer vers le site"
-- Firefox : Cliquez sur "Avancé" puis "Accepter le risque et continuer"
-
-### Page blanche WordPress
-
-1. Attendez 1-2 minutes (initialisation en cours)
-2. Videz le cache du navigateur
-3. Vérifiez les logs WordPress : `docker logs wordpress`
-
-## Sauvegarde et restauration
-
-### Sauvegarder les données
-
-```bash
-# Sauvegarder les volumes
-docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar czf /backup/wordpress_backup.tar.gz -C /data .
-docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar czf /backup/mariadb_backup.tar.gz -C /data .
-```
-
-### Restaurer les données
-
-```bash
-# Arrêter les conteneurs
-make stop
-
-# Restaurer les volumes
-docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar xzf /backup/wordpress_backup.tar.gz -C /data
-docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar xzf /backup/mariadb_backup.tar.gz -C /data
-
-# Redémarrer
-make
-```
-
-## Support
-
-Pour toute question technique ou problème :
-1. Consultez les logs des conteneurs
-2. Vérifiez la section "Résolution de problèmes"
-3. Référez-vous à la documentation développeur (`DEV_DOC.md`)
+- Check logs and container status for errors
+- Review this guide and DEV_DOC.md for troubleshooting
+- For further help, contact the project maintainer
