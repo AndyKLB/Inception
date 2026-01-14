@@ -132,14 +132,14 @@ All services run in isolated Docker containers and are orchestrated with Docker 
 
 - **Backup WordPress and MariaDB data:**
   ```sh
-  docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar czf /backup/wordpress_backup.tar.gz -C /data .
-  docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar czf /backup/mariadb_backup.tar.gz -C /data .
+  docker run --rm -v wordpress_data:/data -v $(pwd):/backup debian:bookworm tar czf /backup/wordpress_backup.tar.gz -C /data .
+  docker run --rm -v mariadb_data:/data -v $(pwd):/backup debian:bookworm tar czf /backup/mariadb_backup.tar.gz -C /data .
   ```
 - **Restore data:**
   ```sh
   make down
-  docker run --rm -v wordpress_data:/data -v $(pwd):/backup alpine tar xzf /backup/wordpress_backup.tar.gz -C /data
-  docker run --rm -v mariadb_data:/data -v $(pwd):/backup alpine tar xzf /backup/mariadb_backup.tar.gz -C /data
+  docker run --rm -v wordpress_data:/data -v $(pwd):/backup debian:bookworm tar xzf /backup/wordpress_backup.tar.gz -C /data
+  docker run --rm -v mariadb_data:/data -v $(pwd):/backup debian:bookworm tar xzf /backup/mariadb_backup.tar.gz -C /data
   make up
   ```
 
