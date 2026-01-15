@@ -15,8 +15,6 @@ services:
     secrets:
       - db_password
       - db_root_password
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
     restart: unless-stopped
 
   wordpress:
@@ -62,17 +60,9 @@ volumes:
   wordpress_data:
     name: wordpress_data
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/ankammer/data/wordpress
   mariadb_data:
     name: mariadb_data
     driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/ankammer/data/mariadb
 secrets:
   db_password:
     file: ../secrets/db_password.txt

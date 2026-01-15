@@ -83,18 +83,20 @@ Inception/
 
 The Makefile automates setup, build, and cleanup. Main targets:
 
-| Command      | Description                                      |
-|--------------|--------------------------------------------------|
-| make         | Add hosts, create volumes, build & start all     |
-| make hosts   | Add local DNS entry to /etc/hosts                |
-| make volumes | Create local data folders for MariaDB/WordPress  |
-| make up      | Build and start all containers                   |
-| make down    | Stop and remove all containers                   |
-| make logs    | Show logs for all services                       |
-| make clean   | Remove containers, volumes, prune system         |
-| make fclean  | Full cleanup: clean + remove data + clean hosts  |
-| make restart | Restart all containers (force recreate)          |
-| make re      | Full rebuild (fclean + all)                      |
+| Command            | Description                                      |
+|--------------      |--------------------------------------------------|
+| make               | Add hosts, create volumes, build & start all     |
+| make hosts         | Add local DNS entry to /etc/hosts                |
+| make volumes       | Create local data folders for MariaDB/WordPress  |
+| make up            | Build and start all containers                   |
+| make down          | Stop and remove all containers                   |
+| make logs          | Show logs for all services                       |
+| make ports         | display running services and their ports         |
+| make clean         | Remove containers, volumes, prune system         |
+| make clean-hosts   | Cleanup hosts entry                              |
+| make fclean        | Full cleanup: clean + remove data + clean hosts  |
+| make restart       | Restart all containers (force recreate)          |
+| make re            | Full rebuild (fclean + all)                      |
 
 ---
 

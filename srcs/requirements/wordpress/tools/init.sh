@@ -27,8 +27,8 @@ if [ ! -f wp-config.php ] || [ ! -f index.php ]; then
     rm -rf /var/www/html/*
     echo "Wordpress en cours d'installation..."
     readarray -t WP_PASS < /run/secrets/credentials
-    WP_ADMIN_PASSWORD=${WP_PASS[0]}
-    WP_USER_PASSWORD=${WP_PASS[1]}
+    IFS=":" read -r WP_ADMIN_USER WP_ADMIN_PASSWORD <<< "${WP_PASS[0]}"
+    IFS=":" read -r WP_USER WP_USER_PASSWORD <<< "${WP_PASS[1]}"
 
     wp core download --allow-root
 
@@ -63,9 +63,10 @@ chown -R www-data:www-data /var/www/html
 
 exec "$@"
 
-# pas set -e pour avoir des logs de wp wt pouvoir debugger
 # readarray -> lit ligne par ligne et stocke dasn un array -t -> suppr '\n' de fin
 # /run/secrets -> dossier de stockage tmp pour les secrets (defini dans docker compose)
+# IFS -> Input Field Separator = definit un separator pour recuperer les 2 valeurs distinctes dans read
+# <<< -> here string redirige de chaine vers les variable separer par le separator
 # www-data -> user et group par defaut
 # wp core download -> installe WP
 # wp config create -> creer wp-config.php

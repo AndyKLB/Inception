@@ -9,10 +9,15 @@ hosts:
 	@sudo sh -c "cat srcs/requirements/tools/host >> /etc/hosts || true"
 
 volumes:
-	@sudo mkdir -p $(PATH_VOLUMES)/mariadb
-	@sudo mkdir -p $(PATH_VOLUMES)/wordpress
-	@sudo chmod 755 $(PATH_VOLUMES)/mariadb
-	@sudo chmod 755 $(PATH_VOLUMES)/wordpress
+	@if [ ! -d $(PATH_VOLUMES) ]; then \
+		sudo mkdir -p $(PATH_VOLUMES); \
+		sudo chown -R root:docker $(PATH_VOLUMES); \
+		sudo chmod 711 $(PATH_VOLUMES); \
+	fi
+	@if [ ! -f /etc/docker/daemon.json ]; then \
+		echo '{ "data-root": "$(PATH_VOLUMES)" }' | sudo tee /etc/docker/daemon.json; \
+	fi
+	@sudo systemctl restart docker
 
 up:
 	@$(DOCK_COMP) up --build
@@ -23,17 +28,18 @@ down:
 logs:
 	@$(DOCK_COMP) logs -f
 
-clean: down
+ports:
+	@$(DOCK_COMP) ps
+
+clean:
 	@$(DOCK_COMP) down --volumes
-	@docker system prune -af
 
 clean-hosts:
 	@sudo sed -i '/$(DOMAIN)/d' /etc/hosts
 
 fclean: clean clean-hosts
-	@sudo rm -rf  $(PATH_VOLUMES)/wordpress
-	@sudo rm -rf  $(PATH_VOLUMES)/mariadb
-	@docker volume rm wordpress_data mariadb_data 2>/dev/null || true
+	@docker system prune -af
+	@sudo rm -rf  $(PATH_VOLUMES)
 
 restart:
 	@$(DOCK_COMP) down
@@ -41,4 +47,4 @@ restart:
 
 re: fclean all
 
-.PHONY: all hosts volumes up down logs clean fclean clean-hosts restart re
+.PHONY: all hosts volumes up down logs clean fclean clean-hosts restart re ports

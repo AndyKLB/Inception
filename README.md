@@ -86,14 +86,16 @@ All services are orchestrated via Docker Compose and configured for local develo
 ---
 
 ## Useful Commands
-- `make`         : Build and start all services
-- `make up`      : (Re)build and start containers
-- `make down`    : Stop and remove containers
-- `make logs`    : Show logs for all services
-- `make clean`   : Remove containers, volumes, prune system
-- `make fclean`  : Full cleanup (data, volumes, hosts entry)
-- `make restart` : Restart all containers (force recreate)
-- `make re`      : Full rebuild (fclean + all)
+- `make`               : Build and start all services
+- `make up`            : (Re)build and start containers
+- `make down`          : Stop and remove containers
+- `make logs`          : Show logs for all services
+- `make ports`         : display the running services and their ports
+- `make clean`         : Stop and remove containers and volumes
+- `make clean-hosts`   : Cleanup hosts entry
+- `make fclean`        : Full cleanup (data, volumes, hosts entry)
+- `make restart`       : Restart all containers (force recreate)
+- `make re`            : Full rebuild (fclean + all)
 
 ---
 
