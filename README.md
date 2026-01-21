@@ -1,3 +1,6 @@
+*This project has been created as part
+of the 42 curriculum by ankammer*
+
 # Inception
 
 A Docker-based project to deploy a secure, containerized WordPress site with MariaDB and NGINX using Docker Compose.
